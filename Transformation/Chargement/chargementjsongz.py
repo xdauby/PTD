@@ -9,13 +9,41 @@ import json
 import numpy as np
 
 class ChargementJSONGZ(ChargementDonnees):
+    """
+    Charge dans un objet Donnee "vide" des données issues d'un fichier JSONGZ
+
+    Attributes
+    ----------
+    adresse_dossier : str
+        chemin du dossier où se trouve le fichier
+    fichier : str
+        nom du fichier jsongz à importer
+    """
 
     def __init__(self, adresse_dossier, fichier):
+        """
+        Constructeur
+
+        Parameters
+        ----------
+        adresse_dossier : str
+            chemin du dossier où se trouve le fichier
+        fichier : str
+            nom du fichier jsongz à importer
+        """
 
         super().__init__(adresse_dossier, fichier)
 
 
     def appliquer(self, donnees):
+        """
+        Applique le chargement sur les données
+
+        Parameters
+        ----------
+        donnees : Donnee
+            un objet Donnnee vide dans lequel on chargera le fichier jsongz
+        """
 
         folder = self.adresse_dossier
         filename = self.fichier 
@@ -73,5 +101,4 @@ class ChargementJSONGZ(ChargementDonnees):
         #        xj = np.where(list(self.donnees_brutes[i]['fields'].keys())[j] == vars)
         #        vals[i,xj] = list(self.donnees_brutes[i]['fields'].values())[j]
         #self.expi2 = vals
-        
         
