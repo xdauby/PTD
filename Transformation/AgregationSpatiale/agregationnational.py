@@ -42,8 +42,8 @@ class AgregationNational(AgregationSpatiale):
     def appliquer(self, donnee):
         """
         Applique l'agrégation par région et date sur des données
-        Pour les variables quantitatives aggégées, prend la moyenne
-        Pour les variables qualitatives aggégées, prend la première valeur
+        Pour les variables quantitatives agrégées, prend la moyenne
+        Pour les variables qualitatives agrégées, prend la première valeur
 
         Parameters
         ----------
