@@ -5,17 +5,76 @@ sys.path.append(os.getcwd())
 from Transformation.Selection.selectionligne import selectionLigne
 from Transformation.Jointure.jointure import Jointure
 import numpy as np
+from Donnee.donnee import Donnee
 
 
 class JointureGauche(Jointure):
+    """
+    Joint deux tables correspondant aux même observations mais ayant différentes variables
+    Les observations s'identifient selon une ou plusieurs variables
+
+    Attributes
+    ----------
+    donnee_droite : Donnee
+        La première table de données de la jointure
+    vars_joiture : list(str)
+        Là ou les variables de la jointure
+    """
 
 
-    def __init__(self,donnee_droite ,vars_jointure): #liste
+    def __init__(self,donnee_droite ,vars_joitures): #liste
+        """
+        Constructeur
+
+        Parameters
+        ----------
+        donnee_droite : Donnee
+            La première table de données de la jointure
+        vars_joiture : list(str)
+            Là ou les variables de la jointure
+
+        Examples
+        -----
+        >>> data1 = Donnee(np.array(['id','valeur']),np.array([['01',0],['25',10]]))
+        >>> joint = JointureGauche(data1, 'id')
+        >>> print(joint.vars_joitures)
+        id
+
+        """
         
-        self.vars_joitures = np.array(vars_jointure)
+        self.vars_joitures = np.array(vars_joitures)
         self.donnee_droite = donnee_droite
 
     def appliquer(self, donnee_gauche):
+        """
+        Applique la jointure
+        Modifie la table entrée en paramètre
+
+        Parameters
+        ----------
+        donnee_gauche : Donnee
+            La deuxième table de données de la jointure
+
+        Examples
+        -----
+        >>> data1 = Donnee(np.array(['id','valeur']),np.array([['01',0],['25',10]]),np.array(['car','float']))
+        >>> data2 = Donnee(np.array(['id','valeur2']),np.array([['01','a'],['25','b']]))
+        >>> joint = JointureGauche(data1, ['id'])
+        >>> joint.appliquer(data2)
+        >>> print(data2)
+        [['id' 'valeur2' 'valeur']
+         ['01' 'a' '0']
+         ['25' 'b' '10']]
+
+        >>> data1 = Donnee(np.array(['tps','lieu','valeur']),np.array([['01','x',0],['01','y',10]]),np.array(['car','float']))
+        >>> data2 = Donnee(np.array(['tps','lieu','valeur2']),np.array([['01','x','a'],['01','y','b']]))
+        >>> joint = JointureGauche(data1, ['tps','lieu'])
+        >>> joint.appliquer(data2)
+        >>> print(data2)        
+        [['tps' 'lieu' 'valeur2' 'valeur']
+         ['01' 'x' 'a' '0']
+         ['01' 'y' 'b' '10']]
+        """
         
         check = all(item in  self.donnee_droite.recuperervariable() for item in self.vars_joitures)
         if not check:
@@ -46,4 +105,6 @@ class JointureGauche(Jointure):
         donnee_gauche.ajoutercolonnes(table, typage)
 
         
-  
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()  
