@@ -17,6 +17,7 @@ class JointureGauche(Jointure):
     ----------
     donnee_droite : Donnee
         La première table de données de la jointure
+        L'attribut typage doit être non vide
     vars_joiture : list(str)
         Là ou les variables de la jointure
     """
@@ -30,6 +31,7 @@ class JointureGauche(Jointure):
         ----------
         donnee_droite : Donnee
             La première table de données de la jointure
+            L'attribut typage doit être non vide
         vars_joiture : list(str)
             Là ou les variables de la jointure
 
@@ -54,6 +56,7 @@ class JointureGauche(Jointure):
         ----------
         donnee_gauche : Donnee
             La deuxième table de données de la jointure
+            L'attribut typage doit être non vide
 
         Examples
         -----
