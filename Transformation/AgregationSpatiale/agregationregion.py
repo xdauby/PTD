@@ -85,11 +85,9 @@ class AgregationRegion(AgregationSpatiale):
         date_indice =  donnee.indicescolonnes(self.var_date)
         region_indice = donnee.indicescolonnes(self.var_reg)
         
-        regions = np.unique(donnees_final[:,region_indice], axis = 0)
-        date = np.unique(donnees_final[:,date_indice], axis = 0)
-        temp = np.empty((0,len(donnees_final[0,:])))
-      
         regdate = np.unique(donnees_final[:,[region_indice[0], date_indice[0]]], axis = 0)
+        temp = np.empty((0,len(donnees_final[0,:])))
+
 
         for elmt in regdate:
             lignes = selectionLigne.indiceslignesgardees(donnee, np.array([self.var_date,self.var_reg]) , np.array([elmt[1],elmt[0]]))
