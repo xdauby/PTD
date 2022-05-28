@@ -14,7 +14,6 @@ class AgregationRegion(AgregationSpatiale):
     """
     Agrège des données afin qu'il n'y ait qu'une observation pour chaque Région à chaque Date (peut s'appliquer pour 
     d'autres couples de variables)
-
     Attributes
     ----------
     var_date : list(str)
@@ -26,14 +25,12 @@ class AgregationRegion(AgregationSpatiale):
     def __init__(self, var_date, var_reg):
         """
         Constructeur
-
         Parameters
         ----------
         var_date : list(str)
             nom de la variable de date
         var_reg : list(str)
             nom de la variable de région
-
         Examples
         -----
         >>> agreg=AgregationRegion(['date'], ['Region'])
@@ -52,19 +49,16 @@ class AgregationRegion(AgregationSpatiale):
         Applique l'agrégation par région et date sur des données
         Pour les variables quantitatives agrégées, prend la moyenne
         Pour les variables qualitatives agrégées, prend la première valeur
-
         Parameters
         ----------
         donnee : Donnee
             Les données que l'on cherche à aggréger
-
         Raises
         ------
         Exception
             vérifie que les attributs var_date et var_region appartiennent à l'attribut variable de donnee
         Exception
             Vérifie que l'attribut typage de donnee est bien renseigné
-
         Examples
         -----
         >>> agreg=AgregationRegion(['date'], ['region'])
@@ -72,10 +66,9 @@ class AgregationRegion(AgregationSpatiale):
         >>> agreg.appliquer(donnee)
         >>> print(donnee)
         [['date' 'region' 'valeur']
-         ['1.0' 'Brt' '5.0']
-         ['1.0' 'Hdf' '74.0']
-         ['2.0' 'Brt' '100.0']]
-
+         ['1' 'Brt' '5.0']
+         ['2' 'Brt' '100.0']
+         ['1' 'Hdf' '74.0']]
         """
         
         check1 = all(item in  donnee.recuperervariable() for item in self.var_date)
@@ -96,13 +89,13 @@ class AgregationRegion(AgregationSpatiale):
         date = np.unique(donnees_final[:,date_indice], axis = 0)
         temp = np.empty((0,len(donnees_final[0,:])))
       
-        for date_courante in date:
-            for region_courante in regions:
-                
-                lignes = selectionLigne.indiceslignesgardees(donnee, np.array([self.var_date,self.var_reg]) , np.array([date_courante[0],region_courante[0]]))
-                maths = Statistiques(donnees_final[lignes,:], typage)
-                temp = np.row_stack((temp, maths.moyenne()))
+        regdate = np.unique(donnees_final[:,[region_indice[0], date_indice[0]]], axis = 0)
 
+        for elmt in regdate:
+            lignes = selectionLigne.indiceslignesgardees(donnee, np.array([self.var_date,self.var_reg]) , np.array([elmt[1],elmt[0]]))
+            maths = Statistiques(donnees_final[lignes,:], typage)
+            temp = np.row_stack((temp, maths.moyenne()))
+        
         donnee.supprimerlignes()
         donnee.ajouterlignes(temp)
 
@@ -110,4 +103,3 @@ class AgregationRegion(AgregationSpatiale):
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
-
