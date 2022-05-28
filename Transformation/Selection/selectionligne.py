@@ -4,11 +4,34 @@ sys.path.append(os.getcwd())
 
 import numpy as np
 from Transformation.Selection.selection import Selection
+from Donnee.donnee import Donnee
 
 
-class selectionLigne(Selection):
+class SelectionLigne(Selection):
+    """
+    Sélectionne des lignes d'une table de données pour des valeurs de certaines colones, supprime les autres lignes
+    Rmq: Pour chaque variable, ne conserve les observations que pour une seule valeur
+
+    Attributes
+    -----
+    vars_selec : list(str)
+        variables sur lesquelles se fait la sélection
+    vals_selec : list(str)
+        valeurs pour lesquelles ont garde une observation
+
+    """
 
     def __init__(self, vars_selec, vals_selec):
+        """
+        Constructeur
+
+        Parameters
+        ----------
+        vars_selec : list(str)
+            variables sur lesquelles se fait la sélection
+        vals_selec : list(str)
+            valeurs pour lesquelles ont garde une observation
+        """
 
         if type(vars_selec) != list or type(vals_selec) != list:
             raise Exception(f"{vars_selec} ou {vals_selec} n'est pas une liste.")
@@ -33,6 +56,25 @@ class selectionLigne(Selection):
         return lignes_gardees
     
     def appliquer(self, donnees):
+        """
+        Applique la sélection
+
+        Parameters
+        ----------
+        donnees : Donnee
+            Table de données que l'on veut modifier
+
+        
+        Examples
+        -----
+        >>> select=SelectionLigne(['region','date'], ['Brt','1'])
+        >>> donnee = Donnee(np.array(['date','region','valeur']),np.array([[1,'Brt',0],[1,'Brt',10],[1,'Hdf',20],[1,'Hdf',200],[2,'Brt',100],[1,'Hdf',2]]),np.array(['car','car','float']))
+        >>> select.appliquer(donnee)
+        >>> print(donnee)
+        [['date' 'region' 'valeur']
+         ['1' 'Brt' '0']
+         ['1' 'Brt' '10']]
+        """
 
         check = all(item in donnees.recuperervariable() for item in self.vars_selec)
         if not check:
@@ -49,3 +91,7 @@ class selectionLigne(Selection):
         else:
             donnees.supprimerlignes(lignes_suppr)
             
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
