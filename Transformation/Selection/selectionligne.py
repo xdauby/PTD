@@ -7,7 +7,7 @@ from Transformation.Selection.selection import Selection
 from Donnee.donnee import Donnee
 
 
-class SelectionLigne(Selection):
+class selectionLigne(Selection):
     """
     Sélectionne des lignes d'une table de données pour des valeurs de certaines colones, supprime les autres lignes
     Rmq: Pour chaque variable, ne conserve les observations que pour une seule valeur
