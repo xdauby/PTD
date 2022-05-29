@@ -67,7 +67,7 @@ class selectionLigne(Selection):
         
         Examples
         -----
-        >>> select=SelectionLigne(['region','date'], ['Brt','1'])
+        >>> select=selectionLigne(['region','date'], ['Brt','1'])
         >>> donnee = Donnee(np.array(['date','region','valeur']),np.array([[1,'Brt',0],[1,'Brt',10],[1,'Hdf',20],[1,'Hdf',200],[2,'Brt',100],[1,'Hdf',2]]),np.array(['car','car','float']))
         >>> select.appliquer(donnee)
         >>> print(donnee)
