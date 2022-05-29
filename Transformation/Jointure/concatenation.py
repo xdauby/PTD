@@ -18,20 +18,20 @@ class Concatenation:
 
     """
 
-    def __init__(self, donnee_haut):
+    def __init__(self, donnee_bas):
         """
         Constructeur
 
         Parameters
         ----------
-        donnee_haut : Donnee
+        donnee_bas : Donnee
             La première table de données de la concaténation
         
         Examples
         -----
         >>> data1 = Donnee(np.array(['date','region','valeur']),np.array([[1,'Brt',0],[1,'Brt',10],[1,'Hdf',20],[1,'Hdf',200],[2,'Brt',100],[1,'Hdf',2]]))
         >>> concat = Concatenation(data1)
-        >>> print(concat.donnee_haut)
+        >>> print(concat.donnee_bas)
         [['date' 'region' 'valeur']
          ['1' 'Brt' '0']
          ['1' 'Brt' '10']
@@ -40,7 +40,7 @@ class Concatenation:
          ['2' 'Brt' '100']
          ['1' 'Hdf' '2']]
         """
-        self.donnee_haut = donnee_haut
+        self.donnee_bas = donnee_bas
         
 
     def appliquer(self, donnee):
@@ -76,14 +76,25 @@ class Concatenation:
          ['Brt' '0' '1']]
         """
 
-        if not((donnee.recuperervariable() == self.donnee_haut.recuperervariable()).all()):
-            raise Exception('Les deux tables doivent avoir les memes variables')
-        donnee.ajouterlignes(self.donnee_haut.recuperervaleurs())
+        if (donnee.recuperervariable() == self.donnee_bas.recuperervariable()).all():
+            donnee.ajouterlignes(self.donnee_bas.recuperervaleurs())
+        
+        else:
+    
+            varbas = self.donnee_bas.recuperervariable()
+            vardonnee = donnee.recuperervariable()
 
-            
+            swap = []
+            for var in vardonnee:
+                l = np.where(var == varbas)[0]
+                if not np.size(l):
+                    raise Exception('Les deux tables doivent avoir les memes variables')
+                swap.append(l[0])
+            donnee.ajouterlignes(self.donnee_bas.recuperervaleurs()[:,swap])
 
 
 if __name__ == '__main__':
+
     import doctest
     doctest.testmod()
     
