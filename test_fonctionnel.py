@@ -1,5 +1,9 @@
+from multiprocessing import Pipe
 import sys
 import os
+
+from Transformation.Sauvegarde.sauvegardecsv import SauvegardeCSV
+from pipepline.pipeline import Pipeline
 sys.path.append(os.getcwd())
 
 from Donnee.donnee import Donnee
@@ -62,13 +66,16 @@ donnee2.ajoutertypage(typage_energie)
 
 
 #Fenêtrage avec conversion date
+#Effectué à travers un pipeline
 conv_date = ConvertisseurDate(['date'])
-conv_date.appliquer(donnee)
 fen_date1 = Fenetrage(['date'], '2013-01-01T21:00:00+01:00','2013-02-01T07:00:00+01:00')
-fen_date1.appliquer(donnee)
+pipl = Pipeline(donnee,[conv_date,fen_date1])
+pipl.pipeliner()
+
+#Fenêtrage des données électricité
 fen_date2 = Fenetrage(['date_heure'], '2013-01-01T21:00:00+01:00','2013-02-01T07:00:00+01:00')
 fen_date2.appliquer(donnee2)
-#print(len(donnee.recuperervaleurs()))
+
 
 
 #Import données station
@@ -103,3 +110,8 @@ print(donnee.recuperervaleurs())
 #
 t7 = MoyenneGlissante(['t'], 3)
 t7.appliquer(donnee)
+
+
+#Sauvegarde
+sauvg= SauvegardeCSV('test_sauvg.csv')
+sauvg.appliquer(donnee)
