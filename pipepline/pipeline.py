@@ -49,10 +49,12 @@ class Pipeline:
         [['date' 'age']
          ['2014-01-01T21:00:00+01:00' '2']]
         """
-        
+        i = 0
         for trans in self.transformation:
-            trans.appliquer(self.donnees)
-
+            try:
+                trans.appliquer(self.donnees)
+            except:
+                raise Exception('Une transformation est inconne')
 
 if __name__ == '__main__':
     import doctest
