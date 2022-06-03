@@ -91,7 +91,15 @@ class ChargementJSONGZ(ChargementDonnees):
                                 
                 else:
                     xi = np.where(currentline[0,cols] == temp[0])[0]
-                    temp[rows+1,xi] = currentline[1,cols]
+                    if np.size(xi):
+                        temp[rows+1,xi] = currentline[1,cols]
+                    else:
+                        temp2 = np.full((1, len(temp)), 'nan', dtype='<U100')[0]
+                        temp2[0] = currentline[0,cols]
+                        temp2[rows+1] = currentline[1,cols]
+                        temp2 = np.array([temp2]).T
+                        temp = np.concatenate((temp, temp2), axis = 1)
+                        
 
         donnees.ajoutercolonnes(temp)
 
