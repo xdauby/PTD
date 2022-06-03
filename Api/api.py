@@ -24,7 +24,7 @@ def get_departements(donnee, vars_longlat, var_reg):
     list_departements = ['departement']
     
     for longlat in list_longlat:
-        time.sleep(5)
+        time.sleep(0.5)
         try:
             rep = req.get(f'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={longlat[1]}6&lon={longlat[0]}')
             departement = rep.json()['address']['county']
