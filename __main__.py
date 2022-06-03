@@ -2,6 +2,7 @@ import sys
 import os
 
 from Transformation.Sauvegarde.sauvegardecsv import SauvegardeCSV
+from Visualisation.graphique import Graphique
 from pipepline.pipeline import Pipeline
 sys.path.append(os.getcwd())
 
@@ -46,18 +47,18 @@ t0bis.appliquer(donnee2)
 
 #Import données station
 info_station = Donnee()
-charg_station = ChargementCSVGZ('données_régions/', 'postesSynopAvecRegions.csv.gz')
+charg_station = ChargementCSVGZ('Sortie/', 'departements.csv.gz')
 charg_station.appliquer(info_station)
-typage_station = np.array(['car','car','float','float', 'float', 'car'])
+typage_station = np.array(['car','car','float','float', 'float', 'car', 'car'])
 info_station.ajoutertypage(typage_station)
 
 
 #Selection des variables et ajout typage
 
 #meteo
-t0traitement = SelectionColonne(['numer_sta','pmer','date', 't', 'ff' ])
+t0traitement = SelectionColonne(['numer_sta','pmer','date', 't', 'ff', 'u' ])
 t0traitement.appliquer(donnee)
-typage_meteo = np.array(['car','car','float','float','float'])
+typage_meteo = np.array(['car','car','float','float','float', 'float'])
 donnee.ajoutertypage(typage_meteo)
 
 #energie
@@ -67,10 +68,10 @@ typage_energie = np.array(['car', 'car', 'car', 'car', 'car', 'float', 'float'])
 donnee2.ajoutertypage(typage_energie)
 
 #info statio
-t0tristraitement = SelectionColonne(['ID', 'Nom', 'Region'])
+t0tristraitement = SelectionColonne(['ID', 'Nom', 'Region', 'departement'])
 t0tristraitement.appliquer(info_station)
 
-#pre traitement : ajuster les variables (noms ou valeurs)
+#pre traitement : ajuster les variables (noms ou valeurs) 
 donnee.changernomvariable(['numer_sta'],['ID'])
 donnee.changernomvariable(['date'], ['date_heure'])
 donnee2.changernomvariable(['region'], ['Region'])
@@ -89,12 +90,35 @@ jointure_gen = JointureGauche(donnee2, ['Region','date_heure'])
 #ajout d'une moyenne glissante
 moyenne_g = MoyenneGlissante(['t'], 3)
 
-#pipelinons
+conv_date.appliquer(donnee)
+print('\n conversion date : \n')
+print(donnee)
+fen.appliquer(donnee)
+print('\n fenetrage : \n')
+print(donnee)
 fen.appliquer(donnee2)
+print(donnee)
+jointure_station.appliquer(donnee)
+print('\n jointure avec station : \n')
+print(donnee)
+aggreg_region.appliquer(donnee)
+print('\n aggregation region : \n')
+print(donnee)
+jointure_gen.appliquer(donnee)
+print('\n jointure avec les donnees energie : \n')
+print(donnee)
+moyenne_g.appliquer(donnee)
+print('\n moyenne gliassante : \n')
+print(donnee)
+print('---------')
 
-transfo = [conv_date,fen,jointure_station, aggreg_region, jointure_gen, moyenne_g ]
-pipline = Pipeline(donnee, transfo)
-pipline.pipeliner()
+#pipelinons
+
+#fen.appliquer(donnee2)
+
+#transfo = [conv_date,fen,jointure_station, aggreg_region, jointure_gen, moyenne_g ]
+#pipline = Pipeline(donnee, transfo)
+#pipline.pipeliner()
 
 #on peut normaliser ou centrer
 
@@ -112,5 +136,18 @@ pipline.pipeliner()
 sauvg= SauvegardeCSV('Sortie/test_sauvg.csv')
 donnee.trierpardate(['date_heure'])
 sauvg.appliquer(donnee)
-
+print('\n Table finale : \n')
 print(donnee)
+
+#quelques plots
+
+donneebretagne = selectionLigne(['departement'],['Finistère'])
+donneebretagne.appliquer(donnee)
+print('\n Selection sur le département Finistère : \n')
+print(donnee)
+
+affichage = Graphique(['t'],['consommation_brute_totale'])
+affichage.nuage(donnee)
+
+affichage2 = Graphique(['date_heure'],['consommation_brute_totale'])
+affichage2.timeserie(donnee)
